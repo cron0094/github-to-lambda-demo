@@ -13,8 +13,43 @@ phases:
       - zip -r9 ../deployment_package.zip .
       - cd ..
       - zip -g deployment_package.zip lambda_function.py
+      - cd ..
+      - zip -g deployment_package.zip test_model.py
   post_build:
     commands:
       - echo "Updating lambda Function..."
       - aws lambda update-function-code --function-name github-to-lambda-demo --zip-file fileb://deployment_package.zip
       - echo "DONE!!"
+
+steps:
+
+    # Download Incoming Model
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args: ['gsutil', 'cp', 'gs://au-dttl-modelops-models-artifacts/1-incoming/${_MODEL_FILE}', '${_MODEL_FILE}']
+
+   # Download Test Data
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args: ['gsutil', 'cp', 'gs://au-dttl-mlops-data-demo/${_TEST_FILE}', '${_TEST_FILE}']
+
+  # Install dependencies
+  - name: 'devashishupadhyay/scikit-learn-docker'
+    entrypoint: pip
+    args: ["install", "-r", "requirements.txt", "--user"]
+
+  # Run Python Test Case
+  # test_model.py expects a configuration json file in the same directory and will output model_metrics.json
+  - name: 'devashishupadhyay/scikit-learn-docker'
+    entrypoint: python3
+    args: ['test_model.py', '${_MODEL_FILE}', '${_TEST_FILE}', 'configuration.json', 'model_metrics.json']
+
+  # Upload model to archive
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args: ['gsutil', 'cp', '${_MODEL_FILE}', 'gs://au-dttl-modelops-models-artifacts/2-archive/${BUILD_ID}/${_MODEL_FILE}']
+
+  # Upload metrics file to archive
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args: ['gsutil', 'cp', 'model_metrics.json', 'gs://au-dttl-modelops-models-artifacts/2-archive/${BUILD_ID}/model_metrics.json']
+
+  # Upload model to live folder
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args: ['gsutil', 'cp', '${_MODEL_FILE}', 'gs://au-dttl-modelops-models-artifacts/3-live/${_MODEL_FILE}']
