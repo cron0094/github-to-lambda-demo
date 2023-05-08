@@ -1,22 +1,5 @@
 version: 0.2
 
-run-as: Linux-user-name
-
-env:
-  shell: shell-tag
-  variables:
-    key: "value"
-    key: "value"
-  parameter-store:
-    key: "value"
-    key: "value"
-  exported-variables:
-    - variable
-    - variable
-  secrets-manager:
-    key: secret-id:json-key:version-stage:version-id
-  git-credential-helper: no | yes
-
 proxy:
   upload-artifacts: no | yes
   logs: no | yes
@@ -27,7 +10,6 @@ batch:
   # build-matrix:
   # build-graph:
 
-
 phases:
   install:
     runtime-versions:
@@ -35,32 +17,19 @@ phases:
     commands:
       - echo "Installing dependencies..."
       - pip install -r requirements.txt -t lib
-
  pre_build:
-    run-as: Linux-user-name
-    on-failure: ABORT | CONTINUE
+    on-failure: ABORT
     commands:
-      - command
-      - command
-    finally:
-      - command
+      - python test_model.py
       - command
   build:
-    run-as: Linux-user-name
-    on-failure: ABORT | CONTINUE
+    on-failure: ABORT
     commands:
-      - command
-      - command
-    finally:
       - command
       - command
   post_build:
-    run-as: Linux-user-name
-    on-failure: ABORT | CONTINUE
+    on-failure: ABORT
     commands:
-      - command
-      - command
-    finally:
       - command
       - command
 reports:
