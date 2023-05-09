@@ -7,13 +7,12 @@ phases:
       python: 3.8
     commands:
     - echo "Installing dependencies..."
-    - pip config set devashishupadhyay/scikit-learn-docker
     - pip3 install -r requirements.txt
     - aws s3 cp s3://ai-bricks/au-dttl-modelops-models-artifacts/1-incoming/1-incoming_postprocess_est_model.pkl ./
     - aws s3 cp s3://ai-bricks/au-dttl-mlops-data-demo/test.csv ./
   build:
     commands:
-    - python test_model.py
+    - python test_model.py 1-incoming_postprocess_est_model.pkl test.csv configuration.json model_metrics.json
     # - echo "Zipping deployment package..."
     # - cd lib
     # - zip -r9 ../deployment_package.zip .
@@ -22,9 +21,13 @@ phases:
     
   post_build:
     commands:
+    - aws s3 cp 1-incoming_postprocess_est_model.pkl s3://ai-bricks/au-dttl-modelops-models-artifacts/2-archive/2-archive_postprocess_est_model.pkl
+    - aws s3 cp model_metrics.json s3://ai-bricks/au-dttl-modelops-models-artifacts/2-archive/model_metrics.json
+    - aws s3 cp 1-incoming_postprocess_est_model.pkl s3://ai-bricks/au-dttl-modelops-models-artifacts/3-live/3-live_postprocess_est_model.pkl 
+
     #- echo "Updating lambda Function..."
     # - aws lambda update-function-code --function-name github-to-lambda --zip-file fileb://deployment_package.zip
-    - echo "DONE!!"
+    #- echo "DONE!!"
 
 # Moji's yaml with our links included:
 # steps:
@@ -45,9 +48,9 @@ phases:
 
 #   # Run Python Test Case
 #   # test_model.py expects a configuration json file in the same directory and will output model_metrics.json
-  - name: 'devashishupadhyay/scikit-learn-docker'
-    entrypoint: python3
-    args: ['test_model.py', '${_MODEL_FILE}', '${_TEST_FILE}', 'configuration.json', 'model_metrics.json']
+ # - name: 'devashishupadhyay/scikit-learn-docker'
+ #   entrypoint: python3
+ #   args: ['test_model.py', '${_MODEL_FILE}', '${_TEST_FILE}', 'configuration.json', 'model_metrics.json']
 
 #   # Upload model to archive
 #   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
