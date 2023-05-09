@@ -7,6 +7,7 @@ phases:
       python: 3.8
     commands:
     - echo "Installing dependencies..."
+    - pip config set devashishupadhyay/scikit-learn-docker
     - pip3 install -r requirements.txt
     - aws s3 cp s3://ai-bricks/au-dttl-modelops-models-artifacts/1-incoming/1-incoming_postprocess_est_model.pkl ./
     - aws s3 cp s3://ai-bricks/au-dttl-mlops-data-demo/test.csv ./
@@ -41,16 +42,6 @@ phases:
 #  - name: 'devashishupadhyay/scikit-learn-docker'
 #    entrypoint: pip
 #    args: ["install", "-r", "requirements.txt", "--user"]
-
-name: 'devashishupadhyay/scikit-learn-docker'
-
-dependencies:
- - python=3.8
- - pip
- - -r requirements.txt
-
-
-
 
 #   # Run Python Test Case
 #   # test_model.py expects a configuration json file in the same directory and will output model_metrics.json
