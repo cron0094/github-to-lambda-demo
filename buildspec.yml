@@ -1,103 +1,71 @@
 version: 0.2
 
-proxy:
-  upload-artifacts: no | yes
-  logs: no | yes
-
-batch:
-  fast-fail: false | true
-  # build-list:
-  # build-matrix:
-  # build-graph:
-
 phases:
+
   install:
     runtime-versions:
       python: 3.8
     commands:
-      - echo "Installing dependencies..."
-      - pip install -r requirements.txt -t lib
- pre_build:
-    on-failure: ABORT
-    commands:
-      - python test_model.py
-      - command
+    - echo "Installing dependencies..."
+    - pip3 install -r requirements.txt
+    - aws s3 cp s3://ai-bricks/au-dttl-modelops-models-artifacts/1-incoming/1-incoming_postprocess_est_model.pkl ./
+    - aws s3 cp s3://ai-bricks/au-dttl-mlops-data-demo/test.csv ./
   build:
-    on-failure: ABORT
     commands:
-      - command
-      - command
+    - python test_model.py
+    # - echo "Zipping deployment package..."
+    # - cd lib
+    # - zip -r9 ../deployment_package.zip .
+    # - cd ..
+    # - zip -g deployment_package.zip lambda_function.py
+    
   post_build:
-    on-failure: ABORT
     commands:
-      - command
-      - command
-reports:
-  report-group-name-or-arn:
-    files:
-      - location
-      - location
-    base-directory: location
-    discard-paths: no | yes
-    file-format: report-format
-artifacts:
-  files:
-    - location
-    - location
-  name: artifact-name
-  discard-paths: no | yes
-  base-directory: location
-  exclude-paths: excluded paths
-  enable-symlinks: no | yes
-  s3-prefix: prefix
-  secondary-artifacts:
-    artifactIdentifier:
-      files:
-        - location
-        - location
-      name: secondary-artifact-name
-      discard-paths: no | yes
-      base-directory: location
-    artifactIdentifier:
-      files:
-        - location
-        - location
-      discard-paths: no | yes
-      base-directory: location
-cache:
-  paths:
-    - path
-    - path
+    #- echo "Updating lambda Function..."
+    # - aws lambda update-function-code --function-name github-to-lambda --zip-file fileb://deployment_package.zip
+    - echo "DONE!!"
 
-steps:
+# Moji's yaml with our links included:
+# steps:
+# #     # Download Incoming Model
+#    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#      args: ['aws', 'cp', 's3://ai-bricks/au-dttl-modelops-models-artifacts/1-incoming/${_MODEL_FILE}', '${_MODEL_FILE}']
 
-    # Download Incoming Model
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    args: ['gsutil', 'cp', 'gs://au-dttl-modelops-models-artifacts/1-incoming/${_MODEL_FILE}', '${_MODEL_FILE}']
 
-   # Download Test Data
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    args: ['gsutil', 'cp', 'gs://au-dttl-mlops-data-demo/${_TEST_FILE}', '${_TEST_FILE}']
+# #    # Download Test Data
+#    - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#      args: ['aws', 'cp', 's3://ai-bricks/au-dttl-mlops-data-demo/${_TEST_FILE}', '${_TEST_FILE}']
 
-  # Install dependencies
-  - name: 'devashishupadhyay/scikit-learn-docker'
-    entrypoint: pip
-    args: ["install", "-r", "requirements.txt", "--user"]
 
-  # Run Python Test Case
-  # test_model.py expects a configuration json file in the same directory and will output model_metrics.json
+#   # Install dependencies
+#  - name: 'devashishupadhyay/scikit-learn-docker'
+#    entrypoint: pip
+#    args: ["install", "-r", "requirements.txt", "--user"]
+
+name: 'devashishupadhyay/scikit-learn-docker'
+
+dependencies:
+ - python=3.8
+ - pip
+ - -r requirements.txt
+
+
+
+
+#   # Run Python Test Case
+#   # test_model.py expects a configuration json file in the same directory and will output model_metrics.json
   - name: 'devashishupadhyay/scikit-learn-docker'
     entrypoint: python3
     args: ['test_model.py', '${_MODEL_FILE}', '${_TEST_FILE}', 'configuration.json', 'model_metrics.json']
 
-  # Upload model to archive
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    args: ['gsutil', 'cp', '${_MODEL_FILE}', 'gs://au-dttl-modelops-models-artifacts/2-archive/${BUILD_ID}/${_MODEL_FILE}']
+#   # Upload model to archive
+#   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#     args: ['gsutil', 'cp', '${_MODEL_FILE}', 'gs://au-dttl-modelops-models-artifacts/2-archive/${BUILD_ID}/${_MODEL_FILE}']
 
-  # Upload metrics file to archive
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    args: ['gsutil', 'cp', 'model_metrics.json', 'gs://au-dttl-modelops-models-artifacts/2-archive/${BUILD_ID}/model_metrics.json']
+#   # Upload metrics file to archive
+#   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#     args: ['gsutil', 'cp', 'model_metrics.json', 'gs://au-dttl-modelops-models-artifacts/2-archive/${BUILD_ID}/model_metrics.json']
 
-  # Upload model to live folder
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    args: ['gsutil', 'cp', '${_MODEL_FILE}', 'gs://au-dttl-modelops-models-artifacts/3-live/${_MODEL_FILE}']
+#   # Upload model to live folder
+#   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#     args: ['gsutil', 'cp', '${_MODEL_FILE}', 'gs://au-dttl-modelops-models-artifacts/3-live/${_MODEL_FILE}']
