@@ -10,7 +10,7 @@ from sklearn.metrics import balanced_accuracy_score
 USAGE = """%s [model_file] [test_file] [config_file] [output_file]
 """ % sys.argv[0]
 
-def test_model_fairness(model_file, test_file, config_file, metrics_file):
+'''def test_model_fairness(model_file, test_file, config_file, metrics_file):
 
     # Loading configuration
     configFile = json.loads(open(config_file).read())
@@ -53,7 +53,7 @@ def test_model_fairness(model_file, test_file, config_file, metrics_file):
     #    sys.exit(1)
     else:
         print('Model is fair')
-
+'''
 
 if __name__ == '__main__':
     if len(sys.argv) == 5:
