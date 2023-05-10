@@ -13,7 +13,8 @@ phases:
   build:
     on-failure: ABORT
     commands:
-    - python test_model_simple.py
+    - python test_model_simple.py > log.txt
+    - aws s3 cp log.txt s3://ai-bricks/au-dttl-modelops-models-artifacts/2-archive/log.txt
     
   post_build:
     commands:
