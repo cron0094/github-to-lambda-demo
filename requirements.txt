@@ -1,2 +1,4 @@
+pandas
 joblib
 fairlearn
+sklearn
