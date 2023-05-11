@@ -54,7 +54,6 @@ def test_model_fairness(model_file, test_file, config_file, metrics_file):
     else:
         print('Model is fair')
 
-
 if __name__ == '__main__':
     if len(sys.argv) == 5:
         model_file = sys.argv[1]
