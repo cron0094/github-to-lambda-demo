@@ -50,7 +50,7 @@ def test_model_fairness(model_file, test_file, config_file, metrics_file):
     # Check threshold to proceed to the next step
     if float(dictionary['difference'])> configFile["threshold"]:
         print('Model is not fair')
-    #    sys.exit(1)
+        sys.exit(1)
     else:
         print('Model is fair')
 
