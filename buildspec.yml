@@ -13,7 +13,7 @@ phases:
   build:
     on-failure: ABORT
     commands:
-    - python test_model.py
+    - python test_model.py 1-incoming_postprocess_est_model.pkl test.csv configuration.json model_metrics.json
     
   post_build:
     commands:
