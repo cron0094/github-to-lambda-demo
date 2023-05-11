@@ -26,9 +26,9 @@ def test_model_fairness(model_file, test_file, config_file, metrics_file):
 
     # Loading ML model 
     model=joblib.load(model_file)
-    '''Y_pred = model.predict(X_test)
+    Y_pred = model.predict(X_test)
    
-    # Fairness assessment    
+    '''# Fairness assessment    
     balanced_accuracy_score(Y_test, Y_pred)
     mf = MetricFrame(metrics=false_negative_rate,
                       y_true=Y_test,
