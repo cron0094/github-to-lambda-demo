@@ -8,12 +8,12 @@ phases:
     commands:
     - echo "Installing dependencies..."
     - pip3 install -r requirements.txt
-    - aws s3 cp --debug s3://ai-bricks/au-dttl-modelops-models-artifacts/1-incoming/1-incoming_postprocess_est_model.pkl ./
-    - aws s3 cp --debug s3://ai-bricks/au-dttl-mlops-data-demo/test.csv ./
+    - aws s3 cp --debug s3://ai-bricks/au-dttl-modelops-models-artifacts/1-incoming/1-incoming_postprocess_est_model.pkl .
+    - aws s3 cp --debug s3://ai-bricks/au-dttl-mlops-data-demo/test.csv .
   build:
     on-failure: ABORT
     commands:
-    - python test_model.py s3://ai-bricks/au-dttl-modelops-models-artifacts/1-incoming/1-incoming_postprocess_est_model.pkl s3://ai-bricks/au-dttl-mlops-data-demo/test.csv configuration.json model_metrics.json
+    - python test_model.py 1-incoming_postprocess_est_model.pkl test.csv configuration.json model_metrics.json
     
   post_build:
     commands:
