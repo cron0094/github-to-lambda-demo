@@ -17,7 +17,7 @@ def test_model_fairness(model_file, test_file, config_file, metrics_file):
     sensitiveFeatureNames = configFile['sensitiveFeatures']
     # e.g. {"sensitiveFeatures" : "race","threshold":0.1}
     
-    # Loading test data
+    '''# Loading test data
     testData = pd.read_csv(test_file, index_col=False)
 
     Y_test = testData.iloc[:,-2]
@@ -28,7 +28,7 @@ def test_model_fairness(model_file, test_file, config_file, metrics_file):
     model=joblib.load(model_file)
     Y_pred = model.predict(X_test)
    
-    '''# Fairness assessment    
+    # Fairness assessment    
     balanced_accuracy_score(Y_test, Y_pred)
     mf = MetricFrame(metrics=false_negative_rate,
                       y_true=Y_test,
