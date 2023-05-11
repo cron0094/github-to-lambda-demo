@@ -17,14 +17,14 @@ def test_model_fairness(model_file, test_file, config_file, metrics_file):
     sensitiveFeatureNames = configFile['sensitiveFeatures']
     # e.g. {"sensitiveFeatures" : "race","threshold":0.1}
     
-    '''# Loading test data
+    # Loading test data
     testData = pd.read_csv(test_file, index_col=False)
 
     Y_test = testData.iloc[:,-2]
     X_test = testData.iloc[:,0:-2]
     sensitiveFeatures = testData[sensitiveFeatureNames]
 
-    # Loading ML model 
+    '''# Loading ML model 
     model=joblib.load(model_file)
     Y_pred = model.predict(X_test)
    
