@@ -13,7 +13,7 @@ phases:
   build:
     on-failure: ABORT
     commands:
-    - python test_model_simple.py
+    - python test_model.py
     
   post_build:
     commands:
